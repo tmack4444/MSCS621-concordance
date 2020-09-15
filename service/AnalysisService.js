@@ -24,13 +24,8 @@ for(var i = 0; i < bodyWords.length; i++){
     wordCount.set(bodyWords[i], wordCount.get(bodyWords[i]) + 1);
   }
 }
-var wordToCounts = Array.from(wordCount, ([token, count]) => ({ token, count }));
-var words = new Array();
-var counts = new Array();
-for(var i = 0; i < wordToCounts.length; i++){
-  words[i] = wordToCounts[i].token;
-  counts[i] = wordToCounts[i].count;
-}
+var words = Array.from(wordCount.keys());
+var counts = Array.from(wordCount.values());
 var examples = {};
 examples['application/json'] = {
   "concordance" : [ {
