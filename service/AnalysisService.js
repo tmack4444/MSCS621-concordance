@@ -10,6 +10,36 @@
  **/
 exports.getConcordance = function(body) {
   return new Promise(function(resolve, reject) {
+
+
+
+body = "The brown fox jumped over the brown log.";
+var bodyWords = [];
+wordCount = new Map();
+bodyWords = body.split(" ")
+for(var i = 0; i < bodyWords.length; i++){
+  if(wordCount.has(bodyWords[i]) === false){
+    wordCount.set(bodyWords[i], 1);
+  } else {
+    wordCount.set(bodyWords[i], wordCount.get(bodyWords[i]) + 1);
+  }
+}
+var wordToCounts = Array.from(wordCount, ([token, count]) => ({ token, count }));
+var words = new Array();
+var counts = new Array();
+for(var i = 0; i < wordToCounts.length; i++){
+  words[i] = wordToCounts[i].token;
+  counts[i] = wordToCounts[i].count;
+}
+var examples = {};
+examples['application/json'] = {
+  "concordance" : [ {
+    "token" : words,
+    "count" : counts
+  } ]
+};
+}
+    /*
     var examples = {};
     examples['application/json'] = {
   "input" : "The brown fox jumped over the brown log.",
@@ -33,6 +63,7 @@ exports.getConcordance = function(body) {
     "count" : 1
   } ]
 };
+*/
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
@@ -40,4 +71,3 @@ exports.getConcordance = function(body) {
     }
   });
 }
-
