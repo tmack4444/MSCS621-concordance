@@ -29,8 +29,10 @@ var counts = Array.from(wordCount.values());
 var examples = {};
 examples['application/json'] = {
   "concordance" : [ {
-    "token" : words,
-    "count" : counts
+    for(var i = 0; i < words.length; i++){
+      "token" : words[i],
+      "count" : counts[i]
+    }
   } ]
 };
 }
