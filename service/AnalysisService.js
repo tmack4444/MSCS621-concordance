@@ -10,10 +10,6 @@
  **/
 exports.getConcordance = function(body) {
   return new Promise(function(resolve, reject) {
-
-
-
-body = "The brown fox jumped over the brown log.";
 var bodyWords = [];
 wordCount = new Map();
 bodyWords = body.split(" ")
@@ -29,13 +25,18 @@ var counts = Array.from(wordCount.values());
 var examples = {};
 examples['application/json'] = {
   "concordance" : [ {
-    for(var i = 0; i < words.length; i++){
-      "token" : words[i],
-      "count" : counts[i]
-    }
+      "token" : "hello",
+      "count" : 1
   } ]
 };
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
 }
+
     /*
     var examples = {};
     examples['application/json'] = {
@@ -61,10 +62,3 @@ examples['application/json'] = {
   } ]
 };
 */
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
-  });
-}
