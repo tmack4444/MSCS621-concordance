@@ -20,33 +20,20 @@ exports.getConcordance = function(body) {
         wordCount.set(bodyWords[i], wordCount.get(bodyWords[i]) + 1);
       }
   }
-var words = Array.from(wordCount.keys());
-var counts = Array.from(wordCount.values());
-console.log(words);
-console.log(counts);
+  var concordance = [];
+  for(let [word, count] of wordCount){
+    var concordObj = {};
+    concordObj.token = word;
+    concordObj.count = count;
+    concordance.push(concordObj);
+  }
+  concordance = JSON.stringify(concordance);
+  console.log(concordance);
 var examples = {};
   examples['application/json'] = {
-"input" : body,
-"concordance" : [ {
-  "token" : "brown",
-  "count" : 2
-}, {
-  "token" : "fox",
-  "count" : 1
-}, {
-  "token" : "jumped",
-  "count" : 1
-}, {
-  "token" : "log",
-  "count" : 1
-}, {
-  "token" : "over",
-  "count" : 1
-}, {
-  "token" : "the",
-  "count" : 1
-} ]
-};
+    "input" : body,
+    "concordance" : concordance
+  };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
