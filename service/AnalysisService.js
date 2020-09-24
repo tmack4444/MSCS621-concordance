@@ -51,29 +51,29 @@
 exports.getLocations = function(body) {
   return new Promise(function(resolve, reject) {
     var bodyWords = body.toLowerCase().split(" ");
-    var locations = {};
+    var locationsToWords = new Map();
     for(var i = 0; i < bodyWords.length; i++){
-      if(locations.has(bodyWords[i]) === false){
-        locations[bodyWords[i]] = new Array();
+      var tempArray = [];
+      if(locationsToWords.has(bodyWords[i]) === false){
+        locationsToWords.set(bodyWords[i], tempArray);
       }
-      locations[bodyWords[i]].push(i);
+      locationsToWords.get(bodyWords[i]).push(i);
     }
+    console.log(locationsToWords);
 
     var locationSet = [];
-    for(var j = 0; j < locations.length; j++){
-      var locationObj = {};
-      locationObj.token = locations[j];
-      for(var k = 0; k < locations[j].length; k++){
-        locationObj.locations.push(locations[j][k]);
-      }
-      locationSet.push(locationObj);
+    for(let [word, locations] of locationsToWords){
+      var locateObj = {};
+      locateObj.token = word;
+      locateObj.locations = locations;
+      locationSet.push(locateObj);
     }
-    console.log(locationSet);
     locationSet = JSON.stringify(locationSet);
+
     var examples = {};
     examples['application/json'] = {
       "input" : body,
-      "locations" : locationSet
+      "concordance" : locationSet
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
