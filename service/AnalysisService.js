@@ -27,7 +27,6 @@
      concordance.push(concordObj);
    }
    concordance = JSON.stringify(concordance);
-   console.log(concordance);
  var examples = {};
    examples['application/json'] = {
      "input" : body,
@@ -52,39 +51,29 @@
 exports.getLocations = function(body) {
   return new Promise(function(resolve, reject) {
     var bodyWords = body.toLowerCase().split(" ");
-    var locations = new Map();
+    var locations = {};
     for(var i = 0; i < bodyWords.length; i++){
-      locations[bodyWords.get[i]].push(i);
+      if(locations.has(bodyWords[i]) === false){
+        locations[bodyWords[i]] = new Array();
+      }
+      locations[bodyWords[i]].push(i);
     }
+
+    var locationSet = [];
+    for(var j = 0; j < locations.length; j++){
+      var locationObj = {};
+      locationObj.token = locations[j];
+      for(var k = 0; k < locations[j].length; k++){
+        locationObj.locations.push(locations[j][k]);
+      }
+      locationSet.push(locationObj);
+    }
+    console.log(locationSet);
+    locationSet = JSON.stringify(locationSet);
     var examples = {};
-    var wordLocations = new Map();
     examples['application/json'] = {
-  "input" : "The brown fox jumped over the brown log.",
-  "concordance" : [ {
-    "token" : "brown",
-    "locations" : [ 1, 6 ],
-    "count" : 2
-  }, {
-    "token" : "fox",
-    "locations" : [ 2 ],
-    "count" : 1
-  }, {
-    "token" : "jumped",
-    "locations" : [ 3 ],
-    "count" : 1
-  }, {
-    "token" : "log",
-    "locations" : [ 7 ],
-    "count" : 1
-  }, {
-    "token" : "over",
-    "locations" : [ 4 ],
-    "count" : 1
-  }, {
-    "token" : "the",
-    "locations" : [ 0, 5 ],
-    "count" : 1
-  } ]
+      "input" : body,
+      "locations" : locationSet
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
