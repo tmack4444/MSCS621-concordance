@@ -1,11 +1,11 @@
 {
   "name": "mscs721-concordance",
-  "version": "1.0",
+  "version": "2.0.0",
   "description": "A simple concordance API.",
   "main": "index.js",
   "scripts": {
-	"prestart": "npm install",
-	"start": "node index.js"
+    "prestart": "npm install",
+    "start": "node index.js"
   },
   "keywords": [
     "swagger"
