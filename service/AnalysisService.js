@@ -1,6 +1,5 @@
 'use strict';
 
-
 /**
  * Calculate
  * Post text to generate concordance
