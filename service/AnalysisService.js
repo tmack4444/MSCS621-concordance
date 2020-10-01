@@ -1,5 +1,13 @@
 'use strict';
 
+var AWS = require("aws-sdk");
+
+AWS.config.update({
+  region: "us-west-2",
+  endpoint: "52.94.4.0:8080"
+});
+var docClient = new AWS.DynamoDB.DocumentClient();
+
 /**
  * Calculate
  * Post text to generate concordance
@@ -8,7 +16,9 @@
  * returns result
  **/
  exports.getConcordance = function(body) {
+
    return new Promise(function(resolve, reject) {
+   var table = "MSCS621-concordance-analyze";
    var bodyWords = body.toLowerCase().split(" ");
    var wordCount = new Map();
    for(var i = 0; i < bodyWords.length; i++){
@@ -31,13 +41,23 @@
      "input" : body,
      "concordance" : concordance
    };
-     if (Object.keys(examples).length > 0) {
+  console.log("POST " + examples + " to Table " + table + "\n");
+  docClient.put(examples, function(err, data) {
+    if (err) {
+      console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+    } else {
+      console.log("Added item:", JSON.stringify(data, null, 2));
+    }
+  });
+     if (Object.keys(examples).length > 0){
        resolve(examples[Object.keys(examples)[0]]);
      } else {
        resolve();
      }
+
    });
  }
+
 
 
 /**
@@ -48,6 +68,7 @@
  * returns result
  **/
 exports.getLocations = function(body) {
+  var table = "MSCS621-concordance-locate";
   return new Promise(function(resolve, reject) {
     var bodyWords = body.toLowerCase().split(" ");
     var locationsToWords = new Map();
