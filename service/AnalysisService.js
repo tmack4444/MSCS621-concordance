@@ -103,7 +103,24 @@ exports.getLocations = function(body) {
     examples['application/json'] = {
       "input" : body,
       "concordance" : locationSet
-};
+  };
+
+var params = {
+  TableName: table,
+  Item: {
+    'input': body,
+    'Concordance': locationSet
+  }
+  };
+
+  docClient.put(params, function(err, data) {
+    if (err) {
+      console.log("Error", err);
+    } else {
+      console.log("Success", data);
+    }
+  });
+
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
