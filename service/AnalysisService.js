@@ -3,11 +3,9 @@
 var AWS = require("aws-sdk");
 
 AWS.config.update({
-  region: "us-east-2",
-  endpoint: "http://localhost:8000"
+  region: "us-east-2"
 });
 var docClient = new AWS.DynamoDB.DocumentClient();
-console.log("This works");
 /**
  * Calculate
  * Post text to generate concordance
@@ -36,26 +34,29 @@ console.log("This works");
      concordance.push(concordObj);
    }
    concordance = JSON.stringify(concordance);
+
  var examples = {};
    examples['application/json'] = {
-     "input" : body,
+     "Input" : body,
      "concordance" : concordance
    };
-   var params = {
-     TableName: table,
-     Item: {
-       "Input": body,
-       "Concordance": concordance
-     }
+   console.log(body);
+
+ var params = {
+   TableName: table,
+   Item: {
+     'input': body,
+     'Concordance': concordance
+   }
    };
-  console.log("POST " + JSON.stringify(params) + " to Table " + table + "\n");
-  docClient.put(params, function(err, data) {
-    if (err) {
-      console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
-    } else {
-      console.log("Added item:", JSON.stringify(data, null, 2));
-    }
-  });
+
+   docClient.put(params, function(err, data) {
+     if (err) {
+       console.log("Error", err);
+     } else {
+       console.log("Success", data);
+     }
+   });
 
      if (Object.keys(examples).length > 0){
        resolve(examples[Object.keys(examples)[0]]);
