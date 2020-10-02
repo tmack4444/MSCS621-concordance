@@ -14,7 +14,6 @@ var docClient = new AWS.DynamoDB.DocumentClient();
  * returns result
  **/
  exports.getConcordance = function(body) {
-
    return new Promise(function(resolve, reject) {
    var table = "MSCS621-concordance-analyze";
    var bodyWords = body.toLowerCase().split(" ");
@@ -40,23 +39,7 @@ var docClient = new AWS.DynamoDB.DocumentClient();
      "Input" : body,
      "concordance" : concordance
    };
-   console.log(body);
-
- var params = {
-   TableName: table,
-   Item: {
-     'input': body,
-     'Concordance': concordance
-   }
-   };
-
-   docClient.put(params, function(err, data) {
-     if (err) {
-       console.log("Error", err);
-     } else {
-       console.log("Success", data);
-     }
-   });
+   putData(table, body, concordance);
 
      if (Object.keys(examples).length > 0){
        resolve(examples[Object.keys(examples)[0]]);
@@ -66,8 +49,6 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 
    });
  }
-
-
 
 /**
  * Calculate
@@ -104,22 +85,7 @@ exports.getLocations = function(body) {
       "input" : body,
       "concordance" : locationSet
   };
-
-var params = {
-  TableName: table,
-  Item: {
-    'input': body,
-    'Concordance': locationSet
-  }
-  };
-
-  docClient.put(params, function(err, data) {
-    if (err) {
-      console.log("Error", err);
-    } else {
-      console.log("Success", data);
-    }
-  });
+  putData(table, body, locationSet);
 
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
@@ -127,4 +93,22 @@ var params = {
       resolve();
     }
   });
+}
+
+function putData(table, key, dataToPut){
+  var params = {
+    TableName: table,
+    Item: {
+      'input': key,
+      'Concordance': dataToPut
+    }
+    };
+
+    docClient.put(params, function(err, data) {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        console.log("Success", data);
+      }
+    });
 }
