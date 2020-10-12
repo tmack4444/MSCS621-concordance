@@ -35,7 +35,8 @@ var docClient = new AWS.DynamoDB.DocumentClient();
         concordObj.count = count;
         concordance.push(concordObj);
       }
-      concordance = JSON.stringify(concordance);
+      //concordance = JSON.parse(concordance);
+      console.log("Concordance: " + concordance.toString());
       var examples = {};
         examples['application/json'] = {
           "Input" : body,
@@ -43,11 +44,11 @@ var docClient = new AWS.DynamoDB.DocumentClient();
         };
      putData(table, body, concordance);
    } else {
-     console.log(exists);
+     console.log("Exists: " + exists.toString());
      var examples = exists;
    }
      if (Object.keys(examples).length > 0){
-       resolve(examples[Object.keys(examples)[0]]);
+       resolve(examples);
      } else {
        resolve();
      }
@@ -82,7 +83,8 @@ exports.getLocations =  function(body) {
         locateObj.locations = locations;
         locationSet.push(locateObj);
       }
-      locationSet = JSON.stringify(locationSet);
+      //locationSet = JSON.parse(locationSet);
+      console.log("LocationSet: " + locationSet.toString());
       var examples = {};
       examples['application/json'] = {
         "input" : body,
@@ -90,12 +92,12 @@ exports.getLocations =  function(body) {
      };
      putData(table, body, locationSet);
    } else{
-     console.log(exists);
+     console.log("Exists: " + exists.toString());
      var examples = exists;
    }
 
     if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
+      resolve(examples);
     } else {
       resolve();
     }
