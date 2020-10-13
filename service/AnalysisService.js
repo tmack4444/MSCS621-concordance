@@ -36,7 +36,7 @@ var docClient = new AWS.DynamoDB.DocumentClient();
         concordance.push(concordObj);
       }
       //concordance = JSON.parse(concordance);
-      console.log("Concordance: " + concordance.toString());
+      console.dir(concordance);
       var examples = {};
         examples['application/json'] = {
           "Input" : body,
@@ -44,7 +44,7 @@ var docClient = new AWS.DynamoDB.DocumentClient();
         };
      putData(table, body, concordance);
    } else {
-     console.log("Exists: " + exists.toString());
+     console.dir(exists);
      var examples = exists;
    }
      if (Object.keys(examples).length > 0){
@@ -84,7 +84,7 @@ exports.getLocations =  function(body) {
         locationSet.push(locateObj);
       }
       //locationSet = JSON.parse(locationSet);
-      console.log("LocationSet: " + locationSet.toString());
+      console.dir(locationSet);
       var examples = {};
       examples['application/json'] = {
         "input" : body,
@@ -92,7 +92,7 @@ exports.getLocations =  function(body) {
      };
      putData(table, body, locationSet);
    } else{
-     console.log("Exists: " + exists.toString());
+     console.dir(exists);
      var examples = exists;
    }
 
