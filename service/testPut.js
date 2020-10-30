@@ -12,8 +12,8 @@ var count = [4, 1, 1, 1];
 var concordance = [];
 for(var i = 0; i < word.length; i++){
   var concordObj = {};
-  concordObj.token = word;
-  concordObj.count = count;
+  concordObj.token = word[i];
+  concordObj.count = count[i];
   concordance.push(concordObj);
 }
 concordance = JSON.stringify(concordance);
