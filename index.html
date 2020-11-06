@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script type="text/javascript" src="formSubmission.js"></script>
+
+<h2>MSCS621 Concordance API</h2>
+
+<p>Please input a sentence for concordance or locations</p>
+
+<form id="analyze" action="http://localhost:8080/docs/analyze" method = "post">
+  <label for="analyzeIn">Analyze:</label><br>
+  <input type="text" id="analyzeIn" name="analyzeIn"><br>
+  <input type="button" value="Submit" onclick="submitForm('analyzeIn', 'analyze')"/>
+</form>
+
+<br>
+<form id="locate" action="http://localhost:8080/docs/locate" method = "post">
+  <label for="locateIn">Locate:</label><br>
+  <input type="text" id="locateIn" name="locateIn"><br>
+  <input type="button" value="Submit" onclick="submitForm('locateIn', 'locate')"/>
+</form>
+
+<input type="hidden" id="output" name="output" value = ""></input>
+
+</body>
+</html>
