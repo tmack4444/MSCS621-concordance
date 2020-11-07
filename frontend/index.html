@@ -14,12 +14,9 @@
 
 <script>
 $(document).ready(function(){
-  console.log("ready");
   $("button").click(function(){
-    console.log("CLICK!");
     var input = $('input[name="analyzeIn"]').val();
     $.post("/docs/analyze", input);
-    console.log(input);
   });
 });
 </script>
