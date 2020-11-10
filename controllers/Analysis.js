@@ -2,7 +2,7 @@
 
 var utils = require('../utils/writer.js');
 var Analysis = require('../service/AnalysisService');
-
+const axios = require('axios')
 module.exports.getConcordance = function getConcordance (req, res, next, body) {
   /*
   Analysis.getConcordance(body)
@@ -13,18 +13,22 @@ module.exports.getConcordance = function getConcordance (req, res, next, body) {
       utils.writeJson(res, response);
     });
   */
-  //Build a POST request in node from https://stackoverflow.com/questions/6158933/how-is-an-http-post-request-made-in-node-js
-
-  const axios = require('axios')
+  //Build a POST request in node from https://nodejs.dev/learn/make-an-http-post-request-using-nodejs
+  var config = {
+      headers: {
+          'Content-Length': 0,
+          'Content-Type': 'text/plain'
+      }
+  };
 
   axios
     .post('https://k2ici5adja.execute-api.us-east-2.amazonaws.com/default/my-function', {
-       todo: body
+       body
      })
     .then(res => {
       console.log("Success");
       console.log(`statusCode: ${res.statusCode}`)
-      console.log(res)
+      console.log(res.data)
     })
     .catch(error => {
       console.log("ERROR");
