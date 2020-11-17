@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
 var AWS = require("aws-sdk");
 
 AWS.config.update({
-  region: "us-east-2"
+  region: "us-east-2",
 });
 var docClient = new AWS.DynamoDB.DocumentClient();
 
@@ -14,22 +14,22 @@ var docClient = new AWS.DynamoDB.DocumentClient();
  * body String Text to be analyzed (optional)
  * returns result
  **/
- exports.getConcordance = function(body) {
-   return new Promise( async function(resolve, reject) {
-   var table = "MSCS621-concordance-analyze";
-   var exists = await getData(table, body);
-   if(exists == ""){
-     var bodyWords = body.toLowerCase().split(" ");
-     var wordCount = new Map();
-     for(var i = 0; i < bodyWords.length; i++){
-       if(wordCount.has(bodyWords[i]) === false){
-         wordCount.set(bodyWords[i], 1);
+exports.getConcordance = function (body) {
+  return new Promise(async function (resolve, reject) {
+    var table = "MSCS621-concordance-analyze";
+    var exists = await getData(table, body);
+    if (exists == "") {
+      var bodyWords = body.toLowerCase().split(" ");
+      var wordCount = new Map();
+      for (var i = 0; i < bodyWords.length; i++) {
+        if (wordCount.has(bodyWords[i]) === false) {
+          wordCount.set(bodyWords[i], 1);
         } else {
           wordCount.set(bodyWords[i], wordCount.get(bodyWords[i]) + 1);
         }
       }
       var concordance = [];
-      for(let [word, count] of wordCount){
+      for (let [word, count] of wordCount) {
         var concordObj = {};
         concordObj.token = word;
         concordObj.count = count;
@@ -38,22 +38,22 @@ var docClient = new AWS.DynamoDB.DocumentClient();
       //concordance = JSON.parse(concordance);
       console.dir(concordance);
       var examples = {};
-        examples['application/json'] = {
-          "Input" : body,
-          "concordance" : concordance
-        };
-     putData(table, body, concordance);
-   } else {
-     console.dir(exists);
-     var examples = exists;
-   }
-     if (Object.keys(examples).length > 0){
-       resolve(examples);
-     } else {
-       resolve();
-     }
-   });
- }
+      examples["application/json"] = {
+        Input: body,
+        concordance: concordance,
+      };
+      putData(table, body, concordance);
+    } else {
+      console.dir(exists);
+      var examples = exists;
+    }
+    if (Object.keys(examples).length > 0) {
+      resolve(examples);
+    } else {
+      resolve();
+    }
+  });
+};
 
 /**
  * Calculate
@@ -62,22 +62,22 @@ var docClient = new AWS.DynamoDB.DocumentClient();
  * body String Text to be analyzed (optional)
  * returns result
  **/
-exports.getLocations =  function(body) {
+exports.getLocations = function (body) {
   var table = "MSCS621-concordance-locate";
-  return new Promise( async function(resolve, reject) {
+  return new Promise(async function (resolve, reject) {
     var exists = await getData(table, body);
-    if(exists == ""){
+    if (exists == "") {
       var bodyWords = body.toLowerCase().split(" ");
       var locationsToWords = new Map();
-      for(var i = 0; i < bodyWords.length; i++){
+      for (var i = 0; i < bodyWords.length; i++) {
         var tempArray = [];
-        if(locationsToWords.has(bodyWords[i]) === false){
+        if (locationsToWords.has(bodyWords[i]) === false) {
           locationsToWords.set(bodyWords[i], tempArray);
         }
         locationsToWords.get(bodyWords[i]).push(i);
       }
-        var locationSet = [];
-      for(let [word, locations] of locationsToWords){
+      var locationSet = [];
+      for (let [word, locations] of locationsToWords) {
         var locateObj = {};
         locateObj.token = word;
         locateObj.locations = locations;
@@ -86,15 +86,15 @@ exports.getLocations =  function(body) {
       //locationSet = JSON.parse(locationSet);
       console.dir(locationSet);
       var examples = {};
-      examples['application/json'] = {
-        "input" : body,
-        "concordance" : locationSet
-     };
-     putData(table, body, locationSet);
-   } else{
-     console.dir(exists);
-     var examples = exists;
-   }
+      examples["application/json"] = {
+        input: body,
+        concordance: locationSet,
+      };
+      putData(table, body, locationSet);
+    } else {
+      console.dir(exists);
+      var examples = exists;
+    }
 
     if (Object.keys(examples).length > 0) {
       resolve(examples);
@@ -102,8 +102,7 @@ exports.getLocations =  function(body) {
       resolve();
     }
   });
-}
-
+};
 
 /*
 This took a lot longer than it probably should have so to explain for my own sanity
@@ -117,41 +116,44 @@ Return the data from the call. If there is an error catch it and log it
 
 put doesnt need to be async since we're putting data, dont care when it finishes
 */
-async function getData(table, key){
-  var found= "";
+async function getData(table, key) {
+  var found = "";
   var params = {
-      TableName: table,
-      Key:{
-          'input': key
-      }
+    TableName: table,
+    Key: {
+      input: key,
+    },
   };
-  found = await docClient.get(params).promise().then((data) => {
-    //console.log(data.Item);
-    return data.Item;
-  }).catch((err) => {
-    console.log(err, err.stack);
-    return "";
-  });
-  if(found == null){
+  found = await docClient
+    .get(params)
+    .promise()
+    .then((data) => {
+      //console.log(data.Item);
+      return data.Item;
+    })
+    .catch((err) => {
+      console.log(err, err.stack);
+      return "";
+    });
+  if (found == null) {
     found = "";
   }
   return found;
 }
 
-
-function putData(table, key, dataToPut){
+function putData(table, key, dataToPut) {
   var params = {
     TableName: table,
     Item: {
-      'input': key,
-      'Concordance': dataToPut
-    }
+      input: key,
+      Concordance: dataToPut,
+    },
   };
-    docClient.put(params, function(err, data) {
-      if (err) {
-        console.log("Error", err);
-      } else {
-        console.log("Success", data);
-      }
-    });
+  docClient.put(params, function (err, data) {
+    if (err) {
+      console.log("Error", err);
+    } else {
+      console.log("Success", data);
+    }
+  });
 }
