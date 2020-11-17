@@ -1,11 +1,11 @@
-"use strict";
+'use strict'
 
-var AWS = require("aws-sdk");
+const AWS = require('aws-sdk')
 
 AWS.config.update({
-  region: "us-east-2",
-});
-var docClient = new AWS.DynamoDB.DocumentClient();
+  region: 'us-east-2'
+})
+const docClient = new AWS.DynamoDB.DocumentClient()
 
 /**
  * Calculate
@@ -16,44 +16,44 @@ var docClient = new AWS.DynamoDB.DocumentClient();
  **/
 exports.getConcordance = function (body) {
   return new Promise(async function (resolve, reject) {
-    var table = "MSCS621-concordance-analyze";
-    var exists = await getData(table, body);
-    if (exists == "") {
-      var bodyWords = body.toLowerCase().split(" ");
-      var wordCount = new Map();
-      for (var i = 0; i < bodyWords.length; i++) {
+    const table = 'MSCS621-concordance-analyze'
+    const exists = await getData(table, body)
+    if (exists == '') {
+      const bodyWords = body.toLowerCase().split(' ')
+      const wordCount = new Map()
+      for (let i = 0; i < bodyWords.length; i++) {
         if (wordCount.has(bodyWords[i]) === false) {
-          wordCount.set(bodyWords[i], 1);
+          wordCount.set(bodyWords[i], 1)
         } else {
-          wordCount.set(bodyWords[i], wordCount.get(bodyWords[i]) + 1);
+          wordCount.set(bodyWords[i], wordCount.get(bodyWords[i]) + 1)
         }
       }
-      var concordance = [];
-      for (let [word, count] of wordCount) {
-        var concordObj = {};
-        concordObj.token = word;
-        concordObj.count = count;
-        concordance.push(concordObj);
+      const concordance = []
+      for (const [word, count] of wordCount) {
+        const concordObj = {}
+        concordObj.token = word
+        concordObj.count = count
+        concordance.push(concordObj)
       }
-      //concordance = JSON.parse(concordance);
-      console.dir(concordance);
-      var examples = {};
-      examples["application/json"] = {
+      // concordance = JSON.parse(concordance);
+      console.dir(concordance)
+      var examples = {}
+      examples['application/json'] = {
         Input: body,
-        concordance: concordance,
-      };
-      putData(table, body, concordance);
+        concordance: concordance
+      }
+      putData(table, body, concordance)
     } else {
-      console.dir(exists);
-      var examples = exists;
+      console.dir(exists)
+      var examples = exists
     }
     if (Object.keys(examples).length > 0) {
-      resolve(examples);
+      resolve(examples)
     } else {
-      resolve();
+      resolve()
     }
-  });
-};
+  })
+}
 
 /**
  * Calculate
@@ -63,46 +63,46 @@ exports.getConcordance = function (body) {
  * returns result
  **/
 exports.getLocations = function (body) {
-  var table = "MSCS621-concordance-locate";
+  const table = 'MSCS621-concordance-locate'
   return new Promise(async function (resolve, reject) {
-    var exists = await getData(table, body);
-    if (exists == "") {
-      var bodyWords = body.toLowerCase().split(" ");
-      var locationsToWords = new Map();
-      for (var i = 0; i < bodyWords.length; i++) {
-        var tempArray = [];
+    const exists = await getData(table, body)
+    if (exists == '') {
+      const bodyWords = body.toLowerCase().split(' ')
+      const locationsToWords = new Map()
+      for (let i = 0; i < bodyWords.length; i++) {
+        const tempArray = []
         if (locationsToWords.has(bodyWords[i]) === false) {
-          locationsToWords.set(bodyWords[i], tempArray);
+          locationsToWords.set(bodyWords[i], tempArray)
         }
-        locationsToWords.get(bodyWords[i]).push(i);
+        locationsToWords.get(bodyWords[i]).push(i)
       }
-      var locationSet = [];
-      for (let [word, locations] of locationsToWords) {
-        var locateObj = {};
-        locateObj.token = word;
-        locateObj.locations = locations;
-        locationSet.push(locateObj);
+      const locationSet = []
+      for (const [word, locations] of locationsToWords) {
+        const locateObj = {}
+        locateObj.token = word
+        locateObj.locations = locations
+        locationSet.push(locateObj)
       }
-      //locationSet = JSON.parse(locationSet);
-      console.dir(locationSet);
-      var examples = {};
-      examples["application/json"] = {
+      // locationSet = JSON.parse(locationSet);
+      console.dir(locationSet)
+      var examples = {}
+      examples['application/json'] = {
         input: body,
-        concordance: locationSet,
-      };
-      putData(table, body, locationSet);
+        concordance: locationSet
+      }
+      putData(table, body, locationSet)
     } else {
-      console.dir(exists);
-      var examples = exists;
+      console.dir(exists)
+      var examples = exists
     }
 
     if (Object.keys(examples).length > 0) {
-      resolve(examples);
+      resolve(examples)
     } else {
-      resolve();
+      resolve()
     }
-  });
-};
+  })
+}
 
 /*
 This took a lot longer than it probably should have so to explain for my own sanity
@@ -116,44 +116,44 @@ Return the data from the call. If there is an error catch it and log it
 
 put doesnt need to be async since we're putting data, dont care when it finishes
 */
-async function getData(table, key) {
-  var found = "";
-  var params = {
+async function getData (table, key) {
+  let found = ''
+  const params = {
     TableName: table,
     Key: {
-      input: key,
-    },
-  };
+      input: key
+    }
+  }
   found = await docClient
     .get(params)
     .promise()
     .then((data) => {
-      //console.log(data.Item);
-      return data.Item;
+      // console.log(data.Item);
+      return data.Item
     })
     .catch((err) => {
-      console.log(err, err.stack);
-      return "";
-    });
+      console.log(err, err.stack)
+      return ''
+    })
   if (found == null) {
-    found = "";
+    found = ''
   }
-  return found;
+  return found
 }
 
-function putData(table, key, dataToPut) {
-  var params = {
+function putData (table, key, dataToPut) {
+  const params = {
     TableName: table,
     Item: {
       input: key,
-      Concordance: dataToPut,
-    },
-  };
+      Concordance: dataToPut
+    }
+  }
   docClient.put(params, function (err, data) {
     if (err) {
-      console.log("Error", err);
+      console.log('Error', err)
     } else {
-      console.log("Success", data);
+      console.log('Success', data)
     }
-  });
+  })
 }
