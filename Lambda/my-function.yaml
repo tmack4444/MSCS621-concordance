@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+Resources:
+  myfunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs12.x
+      CodeUri: .
+      Description: ''
+      MemorySize: 128
+      Timeout: 3
+      Role: 'arn:aws:iam::395234341975:role/service-role/my-function-role-s9uuof4x'
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path: /my-function
+            Method: ANY
+        Api2:
+          Type: Api
+          Properties:
+            Path: /
+            Method: POST
