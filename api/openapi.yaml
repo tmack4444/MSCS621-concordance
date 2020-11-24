@@ -7,9 +7,9 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 2.0.0
+  version: "2.0"
 servers:
-- url: http://localhost:8080/docs
+- url: http://localhost:8080
   description: SwaggerHub API Auto Mocking
 tags:
 - name: analysis
@@ -46,6 +46,30 @@ paths:
       summary: Calculate
       description: Post text to get locations
       operationId: getLocations
+      requestBody:
+        description: Text to be analyzed
+        content:
+          text/plain:
+            schema:
+              type: string
+            example: The brown fox jumped over the brown log.
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/result'
+        "400":
+          description: invalid input, object invalid
+      x-swagger-router-controller: Analysis
+  /ntlk:
+    post:
+      tags:
+      - analysis
+      summary: Calculate
+      description: Post text to generate concordance
+      operationId: ntlk
       requestBody:
         description: Text to be analyzed
         content:

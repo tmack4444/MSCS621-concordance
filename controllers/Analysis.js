@@ -1,23 +1,34 @@
-'use strict'
+'use strict';
 
-const utils = require('../utils/writer.js')
-const Analysis = require('../service/AnalysisService')
+var utils = require('../utils/writer.js');
+var Analysis = require('../service/AnalysisService');
+
 module.exports.getConcordance = function getConcordance (req, res, next, body) {
   Analysis.getConcordance(body)
     .then(function (response) {
-      utils.writeJson(res, response)
+      utils.writeJson(res, response);
     })
     .catch(function (response) {
-      utils.writeJson(res, response)
-    })
-}
+      utils.writeJson(res, response);
+    });
+};
 
 module.exports.getLocations = function getLocations (req, res, next, body) {
   Analysis.getLocations(body)
     .then(function (response) {
-      utils.writeJson(res, response)
+      utils.writeJson(res, response);
     })
     .catch(function (response) {
-      utils.writeJson(res, response)
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.ntlk = function ntlk (req, res, next, body) {
+  Analysis.ntlk(body)
+    .then(function (response) {
+      utils.writeJson(res, response);
     })
-}
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};

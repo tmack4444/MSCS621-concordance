@@ -1,5 +1,5 @@
 'use strict'
-
+var natural = require('natural');
 //const AWS = require('aws-sdk')
 
 //AWS.config.update({
@@ -106,6 +106,39 @@ exports.getLocations = function (body) {
   })
 }
 
+exports.ntlk = function(body) {
+  return new Promise(async function (resolve, reject){
+  var tokenizer = new natural.WordTokenizer();
+    var bodyWords = tokenizer.tokenize(body.toLowerCase());
+    var wordCount = new Map();
+      for (var i = 0; i < bodyWords.length; i++) {
+        if(wordCount.has(bodyWords[i])){
+          wordCount.set(bodyWords[i], wordCount.get(bodyWords[i]) + 1)
+        } else {
+          wordCount.set(bodyWords[i], 1);
+        }
+      }
+      const concordance = []
+      for (const [word, count] of wordCount) {
+        const concordObj = {}
+        concordObj.token = word
+        concordObj.count = count
+        concordance.push(concordObj)
+      }
+      concordance = JSON.parse(concordance);
+      console.dir(concordance)
+      var examples = {}
+      examples['application/json'] = {
+        Input: body,
+        concordance: concordance
+      }
+    if (Object.keys(examples).length > 0) {
+      resolve(examples)
+    } else {
+      resolve()
+    }
+  })
+}
 /*
 This took a lot longer than it probably should have so to explain for my own sanity
 getData is an asynchronous function, since docClient can take some time to get a value
