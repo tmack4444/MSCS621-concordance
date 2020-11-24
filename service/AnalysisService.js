@@ -1,11 +1,11 @@
 'use strict'
 
-const AWS = require('aws-sdk')
+//const AWS = require('aws-sdk')
 
-AWS.config.update({
-  region: 'us-east-2'
-})
-const docClient = new AWS.DynamoDB.DocumentClient()
+//AWS.config.update({
+  //region: 'us-east-2'
+//})
+//const docClient = new AWS.DynamoDB.DocumentClient()
 
 /**
  * Calculate
@@ -17,7 +17,8 @@ const docClient = new AWS.DynamoDB.DocumentClient()
 exports.getConcordance = function (body) {
   return new Promise(async function (resolve, reject) {
     const table = 'MSCS621-concordance-analyze'
-    const exists = await getData(table, body)
+    const exists = '';
+    //const exists = await getData(table, body)
     if (exists == '') {
       const bodyWords = body.toLowerCase().split(' ')
       const wordCount = new Map()
@@ -42,7 +43,7 @@ exports.getConcordance = function (body) {
         Input: body,
         concordance: concordance
       }
-      putData(table, body, concordance)
+      //putData(table, body, concordance)
     } else {
       console.dir(exists)
       var examples = exists
@@ -63,9 +64,10 @@ exports.getConcordance = function (body) {
  * returns result
  **/
 exports.getLocations = function (body) {
-  const table = 'MSCS621-concordance-locate'
+  //const table = 'MSCS621-concordance-locate'
   return new Promise(async function (resolve, reject) {
-    const exists = await getData(table, body)
+    const exists = '';
+    //const exists = await getData(table, body)
     if (exists == '') {
       const bodyWords = body.toLowerCase().split(' ')
       const locationsToWords = new Map()
@@ -90,7 +92,7 @@ exports.getLocations = function (body) {
         input: body,
         concordance: locationSet
       }
-      putData(table, body, locationSet)
+      //putData(table, body, locationSet)
     } else {
       console.dir(exists)
       var examples = exists
@@ -116,6 +118,7 @@ Return the data from the call. If there is an error catch it and log it
 
 put doesnt need to be async since we're putting data, dont care when it finishes
 */
+/*
 async function getData (table, key) {
   let found = ''
   const params = {
@@ -157,3 +160,4 @@ function putData (table, key, dataToPut) {
     }
   })
 }
+*/
