@@ -11,7 +11,7 @@ var natural = require('natural');
  * Calculate
  * Post text to generate concordance
  *
- * body String Text to be analyzed (optional)
+ * body String Text to be analyzed
  * returns result
  **/
 exports.getConcordance = function (body) {
@@ -60,7 +60,7 @@ exports.getConcordance = function (body) {
  * Calculate
  * Post text to generate concordance
  *
- * body String Text to be analyzed (optional)
+ * body String Text to be analyzed
  * returns result
  **/
 exports.getLocations = function (body) {
@@ -106,6 +106,14 @@ exports.getLocations = function (body) {
   })
 }
 
+/**
+ * ntlk
+ * Post text to generate concordance
+ * Uses a natural language processing library rather than built in string ops
+ *
+ * body String Test to be analyzed
+ * returns result
+**/
 exports.ntlk = function(body) {
   return new Promise(async function (resolve, reject){
   var tokenizer = new natural.WordTokenizer();
@@ -125,8 +133,7 @@ exports.ntlk = function(body) {
         concordObj.count = count
         concordance.push(concordObj)
       }
-      concordance = JSON.parse(concordance);
-      console.dir(concordance)
+      console.dir(concordance);
       var examples = {}
       examples['application/json'] = {
         Input: body,
