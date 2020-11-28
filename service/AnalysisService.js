@@ -1,5 +1,7 @@
 'use strict'
 var natural = require('natural');
+//var timeit = require('./timeit'),
+    //iterations = 30000;
 //const AWS = require('aws-sdk')
 
 //AWS.config.update({
@@ -114,26 +116,30 @@ exports.getLocations = function (body) {
  * body String Test to be analyzed
  * returns result
 **/
-exports.ntlk = function(body) {
+exports.ntlk = function (body) {
   return new Promise(async function (resolve, reject){
-  var tokenizer = new natural.WordTokenizer();
-    var bodyWords = tokenizer.tokenize(body.toLowerCase());
-    var wordCount = new Map();
-      for (var i = 0; i < bodyWords.length; i++) {
-        if(wordCount.has(bodyWords[i])){
-          wordCount.set(bodyWords[i], wordCount.get(bodyWords[i]) + 1)
-        } else {
-          wordCount.set(bodyWords[i], 1);
-        }
-      }
-      const concordance = []
-      for (const [word, count] of wordCount) {
-        const concordObj = {}
-        concordObj.token = word
-        concordObj.count = count
-        concordance.push(concordObj)
-      }
-      console.dir(concordance);
+   /* TF-IDF (or term frequency - inverse document frequency)
+    * Is a calculation of the frequency a term appears in a document relative to number of appearences in a set of documents.
+    * I don't really care about any of that here, what I'm interested in is one small part of this, the TF or term frequency.
+    * It's simply a count of how often a term appears in a document, but the only way for me to access it is through their list terms function, I can't seem
+    * to just call tfidf.tf() directly, even though it seems possible. Instead we have to break down the input with a tokenizer
+    * (Using the default tokenizer ignores certain words for no apparent reason)
+    * And then simply add the term and frequency of each unique word to a JSON object. 
+    */
+    var TfIdf = natural.TfIdf;
+    var tfidf = new TfIdf();
+    var tokenizer = new natural.WordTokenizer();
+    var bodyBreakDown = tokenizer.tokenize(body.toLowerCase());
+    tfidf.addDocument(bodyBreakDown);
+    var termList = tfidf.listTerms(0);
+    const concordance = []
+    for(var i = 0; i < termList.length; i++){
+      const concordObj = {}
+      concordObj.token = termList[i].term;
+      concordObj.count = termList[i].tf;
+      concordance.push(concordObj)
+    }
+    console.dir(concordance);
       var examples = {}
       examples['application/json'] = {
         Input: body,
@@ -146,6 +152,9 @@ exports.ntlk = function(body) {
     }
   })
 }
+
+
+
 /*
 This took a lot longer than it probably should have so to explain for my own sanity
 getData is an asynchronous function, since docClient can take some time to get a value
