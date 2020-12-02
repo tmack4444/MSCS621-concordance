@@ -12,3 +12,23 @@ module.exports.getConcordance = function getConcordance (req, res, next, body) {
       utils.writeJson(res, response);
     });
 };
+
+module.exports.getLocations = function getLocations (req, res, next, body) {
+  Analysis.getLocations(body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.ntlk = function ntlk (req, res, next, body) {
+  Analysis.ntlk(body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
