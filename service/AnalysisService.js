@@ -54,8 +54,8 @@ exports.getConcordance = function (body) {
       var examples = exists
     }
     var end = process.hrtime(start); // end[0] is in seconds, end[1] is in nanoseconds
-    const timeInMs = (end[0] * 1000000 + end[1]) / 1000000;
-    console.log("Execution time: " + timeInMs);
+    const timeInMs = (end[0]* 1000000000 + end[1]) / 1000000;  //convert end[0] to nanoseconds, then convert both combined to miliseconds
+    console.log("Execution time: " + timeInMs + " ms");
     if (Object.keys(examples).length > 0) {
       resolve(examples)
     } else {
@@ -157,8 +157,8 @@ exports.ntlk = function (body) {
         concordance: concordance
       }
     var end = process.hrtime(start); // end[0] is in seconds, end[1] is in nanoseconds
-    const timeInMs = (end[0] * 1000000 + end[1]) / 1000000;
-    console.log("Execution time: " + timeInMs);
+    const timeInMs = (end[0] * 1000000000 + end[1]) / 1000000;  //convert end[0] to nanoseconds, then convert both combined to miliseconds
+    console.log("Execution time: " + timeInMs + " ms");
     if (Object.keys(examples).length > 0) {
       resolve(examples)
     } else {
