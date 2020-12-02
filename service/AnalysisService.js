@@ -1,7 +1,6 @@
+
 'use strict'
 var natural = require('natural');
-//var timeit = require('./timeit'),
-    //iterations = 30000;
 //const AWS = require('aws-sdk')
 
 //AWS.config.update({
@@ -18,6 +17,10 @@ var natural = require('natural');
  **/
 exports.getConcordance = function (body) {
   return new Promise(async function (resolve, reject) {
+    var start = process.hrtime();
+    if(body == ""){
+      resolve()
+    }
     const table = 'MSCS621-concordance-analyze'
     const exists = '';
     //const exists = await getData(table, body)
@@ -39,7 +42,7 @@ exports.getConcordance = function (body) {
         concordance.push(concordObj)
       }
       // concordance = JSON.parse(concordance);
-      console.dir(concordance)
+      //console.dir(concordance)
       var examples = {}
       examples['application/json'] = {
         Input: body,
@@ -50,6 +53,9 @@ exports.getConcordance = function (body) {
       console.dir(exists)
       var examples = exists
     }
+    var end = process.hrtime(start); // end[0] is in seconds, end[1] is in nanoseconds
+    const timeInMs = (end[0] * 1000000 + end[1]) / 1000000;
+    console.log("Execution time: " + timeInMs);
     if (Object.keys(examples).length > 0) {
       resolve(examples)
     } else {
@@ -68,6 +74,7 @@ exports.getConcordance = function (body) {
 exports.getLocations = function (body) {
   //const table = 'MSCS621-concordance-locate'
   return new Promise(async function (resolve, reject) {
+
     const exists = '';
     //const exists = await getData(table, body)
     if (exists == '') {
@@ -118,13 +125,17 @@ exports.getLocations = function (body) {
 **/
 exports.ntlk = function (body) {
   return new Promise(async function (resolve, reject){
+    var start = process.hrtime();
+    if(body == ""){
+      resolve()
+    }
    /* TF-IDF (or term frequency - inverse document frequency)
     * Is a calculation of the frequency a term appears in a document relative to number of appearences in a set of documents.
     * I don't really care about any of that here, what I'm interested in is one small part of this, the TF or term frequency.
     * It's simply a count of how often a term appears in a document, but the only way for me to access it is through their list terms function, I can't seem
     * to just call tfidf.tf() directly, even though it seems possible. Instead we have to break down the input with a tokenizer
     * (Using the default tokenizer ignores certain words for no apparent reason)
-    * And then simply add the term and frequency of each unique word to a JSON object. 
+    * And then simply add the term and frequency of each unique word to a JSON object.
     */
     var TfIdf = natural.TfIdf;
     var tfidf = new TfIdf();
@@ -139,12 +150,15 @@ exports.ntlk = function (body) {
       concordObj.count = termList[i].tf;
       concordance.push(concordObj)
     }
-    console.dir(concordance);
+    //console.dir(concordance);
       var examples = {}
       examples['application/json'] = {
         Input: body,
         concordance: concordance
       }
+    var end = process.hrtime(start); // end[0] is in seconds, end[1] is in nanoseconds
+    const timeInMs = (end[0] * 1000000 + end[1]) / 1000000;
+    console.log("Execution time: " + timeInMs);
     if (Object.keys(examples).length > 0) {
       resolve(examples)
     } else {
@@ -152,6 +166,14 @@ exports.ntlk = function (body) {
     }
   })
 }
+
+exports.compare = function (body) {
+  //outdated endpoint, to remove I'd have to recreate my server files so im just leaving this stub here for now. Will remove later on
+  return new Promise(async function (resolve, reject){
+      resolve();
+  })
+}
+
 
 
 
