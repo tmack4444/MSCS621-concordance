@@ -3,13 +3,13 @@ info:
   title: MSCS721 Concordance
   description: A simple concordance API.
   contact:
-    email: michael.gildein1@marist.edu
+    email: thomas.mackinson1@marist.edu
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.0
+  version: 2.0.0
 servers:
-- url: http://localhost:8080/
+- url: http://localhost:8080/docs
   description: SwaggerHub API Auto Mocking
 tags:
 - name: analysis
@@ -39,6 +39,30 @@ paths:
         "400":
           description: invalid input, object invalid
       x-swagger-router-controller: Analysis
+  /locate:
+    post:
+      tags:
+      - analysis
+      summary: Calculate
+      description: Post text to get locations
+      operationId: getLocations
+      requestBody:
+        description: Text to be analyzed
+        content:
+          text/plain:
+            schema:
+              type: string
+            example: The brown fox jumped over the brown log.
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/result'
+        "400":
+          description: invalid input, object invalid
+      x-swagger-router-controller: Analysis
 components:
   schemas:
     result:
@@ -51,16 +75,30 @@ components:
           type: array
           example:
           - token: brown
+            locations:
+            - 1
+            - 6
             count: 2
           - token: fox
+            locations:
+            - 2
             count: 1
           - token: jumped
+            locations:
+            - 3
             count: 1
           - token: log
+            locations:
+            - 7
             count: 1
           - token: over
+            locations:
+            - 4
             count: 1
           - token: the
+            locations:
+            - 0
+            - 5
             count: 1
           items:
             $ref: '#/components/schemas/result_concordance'
@@ -71,21 +109,39 @@ components:
         input: The brown fox jumped over the brown log.
         concordance:
         - token: brown
+          locations:
+          - 1
+          - 6
           count: 2
         - token: fox
+          locations:
+          - 2
           count: 1
         - token: jumped
+          locations:
+          - 3
           count: 1
         - token: log
+          locations:
+          - 7
           count: 1
         - token: over
+          locations:
+          - 4
           count: 1
         - token: the
+          locations:
+          - 0
+          - 5
           count: 1
     result_concordance:
       type: object
       properties:
         token:
           type: string
+        locations:
+          type: array
+          items:
+            type: integer
         count:
           type: integer

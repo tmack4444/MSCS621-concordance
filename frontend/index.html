@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<h2>MSCS621 Concordance API</h2>
+
+<p>Please input a sentence for concordance or locations</p>
+
+  <label for="analyzeIn">Analyze:</label>
+  <input type="text" id="analyzeIn" name="analyzeIn" value=""></input>
+  <button name="analyzeSubmit">Submit</button>
+
+
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    var input = $('input[name="analyzeIn"]').val();
+    $.post("/docs/analyze", input);
+  });
+});
+</script>
+
+</body>
+</html>
